@@ -1,48 +1,33 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
+"""Module that factorizes as many numbers as possible
+into a product of two smaller numbers."""
+import sys
 
-check_factor()
-{
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        count=$((count + 1))
-                done
-        else
-                num2=$3
-        fi
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
+def factorize(value):
+    """Prints a simple decomposition of an integer > 1"""
+    if value < 2:
+        return
 
-        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$num1
-		        num1=$num2
-		        num2=$numcp
-                fi
+    i = 2
+    while value % i:
+        i += 1
 
-        echo "$num$num1*$num2"
-}
+    print()
+    print(f"{value} <- value-bef")
+    print("{:.0f} = {:.0f} * {:.0f}".format(value, value / i, i))
+    print(f"{value} <- value-aft")
+    print()
 
-if [ $# -ne 1 ]
-then
-        echo 'Usage: rsa <file>'
-        exit 1
-else
 
-        while read i
-        do
+if len(sys.argv) != 2:
+    sys.exit()
 
-                result=$(factor "$i")
-                check_factor $result
+try:
+    with open(sys.argv[1]) as file:
+        for line in file:
+            value = int(line.rstrip())
+            factorize(value)
+except FileNotFoundError:
+    pass
 
-        done < "$1"
-fi
